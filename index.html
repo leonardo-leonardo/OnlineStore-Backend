@@ -11,19 +11,6 @@
     🪟 Made by Leonardo
 </div>
 
-<div class="glass" style="margin: 20px;"><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Aero Glass Store</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div id="taskbar">
-    🪟 Made by Leonardo
-</div>
-
 <div class="glass" style="margin: 20px;">
     <h1>🛒 Aero Glass Store (Idea from Windows 7)</h1>
     <input type="text" id="searchBar" placeholder="Search items..." onkeyup="renderItems()">
@@ -45,42 +32,6 @@
         <button onclick="register()">✨ Register</button>
         <button onclick="login()">➡️ Login</button>
     </div>
-</div>
-
-<div id="itemsContainer" class="glass" style="margin: 20px;"></div>
-
-<div id="cart" class="glass" style="margin: 20px;">
-    <h2>Your Cart</h2>
-    <ul id="cartList"></ul>
-    <p><strong>Total: NT$<span id="total">0</span></strong></p>
-    <p><strong>Payment: <span id="paymentRule">Cash Only</span></strong></p>
-    <button onclick="checkout()">Checkout</button>
-</div>
-
-<audio id="dingSound" src="https://www.myinstants.com/media/sounds/windows-ding.mp3"></audio>
-
-<script src="script.js"></script>
-</body>
-</html>
-
-    <h1>🛒 Aero Glass Store (Idea from Windows 7)</h1>
-    <input type="text" id="searchBar" placeholder="Search items..." onkeyup="renderItems()">
-    <select id="categorySelect" onchange="renderItems()">
-        <option value="all">All Categories</option>
-        <option value="games">Games</option>
-        <option value="optimizing">Optimizing</option>
-    </select>
-</div>
-
-<!-- 🔑 Account Section -->
-<div class="glass" style="margin:20px;">
-    <h2>Account</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <br><br>
-    <button onclick="register()">Register</button>
-    <button onclick="login()">Login</button>
-    <p id="authMessage"></p>
 </div>
 
 <div id="itemsContainer" class="glass" style="margin: 20px;"></div>
