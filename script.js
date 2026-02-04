@@ -197,6 +197,60 @@ async function loadCartFromServer() {
         renderCart();
     }
 }
+// ---------------- NEW Backend Integration ----------------
+const API_URL = "http://localhost:5000"; // change to deployed backend later
+
+async function register() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        const res = await fetch(`${API_URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        if (data.message) {
+            // ✅ Show popup + update message area
+            alert("🎉 Register successful! Welcome, " + username + "!");
+            document.getElementById("authMessage").innerText = data.message;
+        } else {
+            alert("⚠️ " + data.error);
+            document.getElementById("authMessage").innerText = data.error;
+        }
+    } catch (err) {
+        alert("⚠️ Error connecting to server.");
+    }
+}
+
+async function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        const res = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+            // ✅ Show popup + update message area
+            alert("✅ Login successful! Welcome back, " + username + ".");
+            document.getElementById("authMessage").innerText = "Logged in!";
+            loadCartFromServer();
+        } else {
+            alert("⚠️ " + data.error);
+            document.getElementById("authMessage").innerText = data.error;
+        }
+    } catch (err) {
+        alert("⚠️ Error connecting to server.");
+    }
+}
 
 // ---------------- Init ----------------
 loadCart();
