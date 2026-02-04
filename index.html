@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Aero Glass Store</title>
-
-    <!-- Connect CSS -->
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Aero Glass Store</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -13,11 +11,9 @@
     🪟 Made by Leonardo
 </div>
 
-<div class="glass">
+<div class="glass" style="margin: 20px;">
     <h1>🛒 Aero Glass Store (Idea from Windows 7)</h1>
-
     <input type="text" id="searchBar" placeholder="Search items..." onkeyup="renderItems()">
-
     <select id="categorySelect" onchange="renderItems()">
         <option value="all">All Categories</option>
         <option value="games">Games</option>
@@ -25,9 +21,9 @@
     </select>
 </div>
 
-<div id="itemsContainer" class="glass"></div>
+<div id="itemsContainer" class="glass" style="margin: 20px;"></div>
 
-<div id="cart" class="glass">
+<div id="cart" class="glass" style="margin: 20px;">
     <h2>Your Cart</h2>
     <ul id="cartList"></ul>
     <p><strong>Total: NT$<span id="total">0</span></strong></p>
@@ -35,10 +31,8 @@
     <button onclick="checkout()">Checkout</button>
 </div>
 
-<audio id="dingSound"
-       src="https://www.myinstants.com/media/sounds/windows-ding.mp3"></audio>
+<audio id="dingSound" src="https://www.myinstants.com/media/sounds/windows-ding.mp3"></audio>
 
-<!-- Connect JavaScript -->
 <script src="script.js"></script>
 </body>
 </html>
