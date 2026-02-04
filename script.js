@@ -1,3 +1,4 @@
+// ---------------- Existing Store Code ----------------
 const items = [
     {
         name: "Flappy Bird Game",
@@ -75,6 +76,7 @@ function addToCart(name, price) {
     document.getElementById("dingSound").play();
     renderCart();
     saveCart();
+    saveCartToServer(); // 🔗 NEW: also save to backend if logged in
 }
 
 function renderCart() {
@@ -98,6 +100,7 @@ function removeItem(i) {
     cart.splice(i, 1);
     renderCart();
     saveCart();
+    saveCartToServer(); // 🔗 NEW: also update backend
 }
 
 function checkout() {
@@ -126,5 +129,71 @@ function loadCart() {
     renderCart();
 }
 
+// ---------------- NEW Backend Integration ----------------
+const API_URL = "http://localhost:5000"; // change to deployed backend later
+
+async function register() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+    document.getElementById("authMessage").innerText = data.message || data.error;
+}
+
+async function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+    if (data.token) {
+        localStorage.setItem("token", data.token);
+        document.getElementById("authMessage").innerText = "Logged in!";
+        loadCartFromServer();
+    } else {
+        document.getElementById("authMessage").innerText = data.error;
+    }
+}
+
+async function saveCartToServer() {
+    const token = localStorage.getItem("token");
+    if (!token) return; // only save if logged in
+
+    await fetch(`${API_URL}/cart`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, cart })
+    });
+}
+
+async function loadCartFromServer() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const res = await fetch(`${API_URL}/cart`, {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    if (data.cart) {
+        cart = data.cart;
+        total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+        renderCart();
+    }
+}
+
+// ---------------- Init ----------------
 loadCart();
 renderItems();
