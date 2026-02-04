@@ -143,7 +143,11 @@ async function register() {
     });
 
     const data = await res.json();
-    document.getElementById("authMessage").innerText = data.message || data.error;
+    if (data.message) {
+        alert("🎉 Welcome aboard, " + username + "! Your account has been created successfully.");
+    } else {
+        alert("⚠️ " + data.error);
+    }
 }
 
 async function login() {
@@ -159,10 +163,10 @@ async function login() {
     const data = await res.json();
     if (data.token) {
         localStorage.setItem("token", data.token);
-        document.getElementById("authMessage").innerText = "Logged in!";
+        alert("✅ Login successful! Welcome back, " + username + ".");
         loadCartFromServer();
     } else {
-        document.getElementById("authMessage").innerText = data.error;
+        alert("⚠️ " + data.error);
     }
 }
 
