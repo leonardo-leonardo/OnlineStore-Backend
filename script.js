@@ -197,3 +197,42 @@ async function loadCartFromServer() {
 // ---------------- Init ----------------
 loadCart();
 renderItems();
+const API_URL = "http://localhost:5000"; // backend URL
+
+async function register() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+    if (data.message) {
+        alert("🎉 Welcome aboard, " + username + "! Your account has been created successfully.");
+    } else {
+        alert("⚠️ " + data.error);
+    }
+}
+
+async function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+    if (data.token) {
+        localStorage.setItem("token", data.token);
+        alert("✅ Login successful! Welcome back, " + username + ".");
+        loadCartFromServer();
+    } else {
+        alert("⚠️ " + data.error);
+    }
+}
