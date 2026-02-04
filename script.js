@@ -76,7 +76,7 @@ function addToCart(name, price) {
     document.getElementById("dingSound").play();
     renderCart();
     saveCart();
-    saveCartToServer(); // 🔗 NEW: also save to backend if logged in
+    saveCartToServer(); // 🔗 also save to backend if logged in
 }
 
 function renderCart() {
@@ -100,7 +100,7 @@ function removeItem(i) {
     cart.splice(i, 1);
     renderCart();
     saveCart();
-    saveCartToServer(); // 🔗 NEW: also update backend
+    saveCartToServer(); // 🔗 also update backend
 }
 
 function checkout() {
@@ -136,17 +136,23 @@ async function register() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    const res = await fetch(`${API_URL}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
+    try {
+        const res = await fetch(`${API_URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json();
-    if (data.message) {
-        alert("🎉 Welcome aboard, " + username + "! Your account has been created successfully.");
-    } else {
-        alert("⚠️ " + data.error);
+        const data = await res.json();
+        if (data.message) {
+            alert("🎉 Register successful! Welcome, " + username + "!");
+            document.getElementById("authMessage").innerText = data.message;
+        } else {
+            alert("⚠️ " + data.error);
+            document.getElementById("authMessage").innerText = data.error;
+        }
+    } catch (err) {
+        alert("⚠️ Error connecting to server.");
     }
 }
 
@@ -154,19 +160,25 @@ async function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    const res = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
+    try {
+        const res = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json();
-    if (data.token) {
-        localStorage.setItem("token", data.token);
-        alert("✅ Login successful! Welcome back, " + username + ".");
-        loadCartFromServer();
-    } else {
-        alert("⚠️ " + data.error);
+        const data = await res.json();
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+            alert("✅ Login successful! Welcome back, " + username + ".");
+            document.getElementById("authMessage").innerText = "Logged in!";
+            loadCartFromServer();
+        } else {
+            alert("⚠️ " + data.error);
+            document.getElementById("authMessage").innerText = data.error;
+        }
+    } catch (err) {
+        alert("⚠️ Error connecting to server.");
     }
 }
 
@@ -195,60 +207,6 @@ async function loadCartFromServer() {
         cart = data.cart;
         total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
         renderCart();
-    }
-}
-// ---------------- NEW Backend Integration ----------------
-const API_URL = "http://localhost:5000"; // change to deployed backend later
-
-async function register() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    try {
-        const res = await fetch(`${API_URL}/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await res.json();
-        if (data.message) {
-            // ✅ Show popup + update message area
-            alert("🎉 Register successful! Welcome, " + username + "!");
-            document.getElementById("authMessage").innerText = data.message;
-        } else {
-            alert("⚠️ " + data.error);
-            document.getElementById("authMessage").innerText = data.error;
-        }
-    } catch (err) {
-        alert("⚠️ Error connecting to server.");
-    }
-}
-
-async function login() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    try {
-        const res = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await res.json();
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            // ✅ Show popup + update message area
-            alert("✅ Login successful! Welcome back, " + username + ".");
-            document.getElementById("authMessage").innerText = "Logged in!";
-            loadCartFromServer();
-        } else {
-            alert("⚠️ " + data.error);
-            document.getElementById("authMessage").innerText = data.error;
-        }
-    } catch (err) {
-        alert("⚠️ Error connecting to server.");
     }
 }
 
