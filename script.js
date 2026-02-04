@@ -1,5 +1,5 @@
 const items = [
-   {
+    {
         name: "Flappy Bird Game",
         price: 5,
         category: "games",
@@ -41,30 +41,32 @@ function renderItems() {
     const search = document.getElementById("searchBar").value.toLowerCase();
     const category = document.getElementById("categorySelect").value;
 
-    items.filter(item =>
-        (category === "all" || item.category === category) &&
-        item.name.toLowerCase().includes(search)
-    ).forEach(item => {
-        container.innerHTML += `
-            <div class="item">
-                <img src="${item.img}">
-                <h3>${item.name}</h3>
-                <p>NT$${item.price}</p>
-                <input type="number" id="qty-${item.name}" value="1" min="1">
-                <button onclick="addToCart('${item.name}', ${item.price})">
-                    Add to Cart
-                </button>
-            </div>
-        `;
-    });
+    items
+        .filter(item =>
+            (category === "all" || item.category === category) &&
+            item.name.toLowerCase().includes(search)
+        )
+        .forEach(item => {
+            container.innerHTML += `
+                <div class="item">
+                    <img src="${item.img}">
+                    <h3>${item.name}</h3>
+                    <p>Price: NT$${item.price}</p>
+                    Quantity: 
+                    <input type="number" id="qty-${item.name}" value="1" min="1" style="width:50px;">
+                    <br><br>
+                    <button onclick="addToCart('${item.name}', ${item.price})">Add to Cart</button>
+                </div>
+            `;
+        });
 }
 
 function addToCart(name, price) {
     const qty = parseInt(document.getElementById("qty-" + name).value);
-    const found = cart.find(i => i.name === name);
+    const existing = cart.find(i => i.name === name);
 
-    if (found) {
-        found.qty += qty;
+    if (existing) {
+        existing.qty += qty;
     } else {
         cart.push({ name, price, qty });
     }
@@ -72,29 +74,30 @@ function addToCart(name, price) {
     total += price * qty;
     document.getElementById("dingSound").play();
     renderCart();
+    saveCart();
 }
 
 function renderCart() {
     const list = document.getElementById("cartList");
     list.innerHTML = "";
 
-    cart.forEach((item, i) => {
+    cart.forEach((item, index) => {
         list.innerHTML += `
-            <li>${item.name} × ${item.qty}
-                <button onclick="removeItem(${i})">❌</button>
-            </li>
-        `;
+            <li>${item.name} – NT$${item.price} × ${item.qty}
+                <button onclick="removeItem(${index})">❌</button>
+            </li>`;
     });
 
     document.getElementById("total").innerText = total;
     document.getElementById("paymentRule").innerText =
-        total >= 500 ? "Cash Before Delivery" : "Cash Only";
+        total >= 500 ? "Cash Before Delivery(Pay to Leonardo in LTBrown)" : "Cash Only(Pay to Leonardo in LTBrown)";
 }
 
-function removeItem(index) {
-    total -= cart[index].price * cart[index].qty;
-    cart.splice(index, 1);
+function removeItem(i) {
+    total -= cart[i].price * cart[i].qty;
+    cart.splice(i, 1);
     renderCart();
+    saveCart();
 }
 
 function checkout() {
@@ -102,7 +105,26 @@ function checkout() {
         alert("Cart is empty!");
         return;
     }
-    alert("Order sent!");
+
+    const order = cart.map(i => `${i.name} × ${i.qty} - NT$${i.price * i.qty}`).join("%0A");
+    const payment = total >= 500 ? "Cash Before Delivery(Pay to Leonardo in LTBrown)" : "Cash Only(Pay to Leonardo in LTBrown)";
+
+    window.location.href =
+        `mailto:leofoooo132@gmail.com?subject=New Order&body=Order:%0A${order}%0A%0ATotal: NT$${total}%0APayment: ${payment}`;
 }
 
+function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("total", total);
+}
+
+function loadCart() {
+    const savedCart = localStorage.getItem("cart");
+    const savedTotal = localStorage.getItem("total");
+    if (savedCart) cart = JSON.parse(savedCart);
+    if (savedTotal) total = parseInt(savedTotal);
+    renderCart();
+}
+
+loadCart();
 renderItems();
