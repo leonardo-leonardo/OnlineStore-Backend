@@ -10,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // ✅ Environment variables
-const PORT = process.env.PORT || 10000; // Render assigns PORT automatically
+const PORT = process.env.PORT || 10000; // Render requires process.env.PORT
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/aeroglassstore";
 const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
@@ -113,7 +113,3 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
-
-// 🌐 Use Render's dynamic port
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
