@@ -130,7 +130,7 @@ function loadCart() {
 }
 
 // ---------------- NEW Backend Integration ----------------
-const API_URL = "http://localhost:5000"; // change to deployed backend later
+const API_URL = "https://onlinestore-backend-6w1q.onrender.com"; // ✅ deployed backend
 
 async function register() {
     const username = document.getElementById("username").value;
